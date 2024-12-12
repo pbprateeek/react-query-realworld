@@ -2,3 +2,4 @@
 /craco.config.js
 /__tests__
 /babel.config.js
+/src/repositories/reconfig-async-client.js

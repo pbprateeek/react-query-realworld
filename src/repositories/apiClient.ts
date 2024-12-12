@@ -1,8 +1,9 @@
 import { ACCESS_TOKEN_KEY } from '@/constants/token.contant';
 import token from '@/lib/token';
 import axios, { AxiosResponse, InternalAxiosRequestConfig, AxiosError } from 'axios';
+import sendRequest from './reconfig-async-client';
 
-const host = 'https://api.realworld.io/api';
+const host = 'http://127.0.0.1:8080/api';
 
 const apiClient = axios.create({
   baseURL: host,
@@ -52,4 +53,49 @@ apiClient.interceptors.response.use(
   },
 );
 
+export const successCallback = (response: any) => {
+  const { method, url } = response.config;
+  const { status } = response;
+
+  logOnDev(`✨ [${method?.toUpperCase()}] ${url} | Response ${status}`, response);
+
+  return response;
+};
+export const errorCallback = (error: any) => {
+  const { message } = error;
+  const { status, data } = error.response;
+  const { method, url } = error.config;
+
+  if (status === 429) {
+    token.removeToken('ACCESS_TOKEN_KEY');
+    window.location.reload();
+  }
+
+  logOnDev(`🚨 [${method?.toUpperCase()}] ${url} | Error ${status} ${data?.message || ''} | ${message}`, error);
+
+  return Promise.reject(error);
+};
+export const initReqWithJwtToken = () => {
+  const jwtToken: string | null = token.getToken(ACCESS_TOKEN_KEY);
+  return jwtToken == null
+    ? {}
+    : {
+        headers: {
+          Authorization: `Token ${jwtToken}`,
+        },
+      };
+};
+export const sendRequestWithParams = async (endpoint: string, reqSpecs: any) => {
+  const resp = await sendRequest(
+    'realworld_java21_springboot3',
+    `/api${endpoint}`,
+    { ...reqSpecs },
+    () => {},
+    () => {},
+    ['127.0.0.1:3300'],
+  );
+  return {
+    data: resp,
+  };
+};
 export default apiClient;

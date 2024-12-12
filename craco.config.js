@@ -4,6 +4,9 @@ const path = require('path');
 const tsConfigPath = path.resolve(__dirname, './tsconfig.json');
 
 module.exports = {
+  devServer: {
+    port: 5000,
+  },
   reactScriptsVersion: 'react-scripts',
   webpack: {
     alias: {
