@@ -127,7 +127,6 @@ export default async function sendRequest(
   var ctr = 0;
   var response = null;
   while (!isRequestSent && ctr++ < 20) {
-    console.log('HEre......');
     if (!latenciesMap.get(serviceName).has('bestAR') || latenciesMap.get(serviceName).get('bestAR') == null) {
       onErrorFunction(response);
       break;
@@ -143,15 +142,12 @@ export default async function sendRequest(
         },
         signal: AbortSignal.timeout(timeoutDuration),
       });
-      console.log('dnvanfkrwnwnr');
       const respStatus = await resp.status;
       if (respStatus != 200 && respStatus != 201) {
         throw new Error(`Active Server ${bestAR} has crashed or not available for service ${serviceName}`);
       }
       response = await resp.json();
-      //respJson = JSON.parse(respText.substring(11));
       isRequestSent = true;
-      //response = successRequestMsg(respJson["QID"]);
       callbackFunction(response);
     } catch (error) {
       console.error('The following error occurred: ');
@@ -172,9 +168,6 @@ async function initService(service) {
   let rcUrls = service.rcUrls;
   let isLocal = service.isLocal;
 
-  console.log(serviceName);
-  console.log(rcUrls);
-  console.log(isLocal);
 
   latenciesMap.set(serviceName, new Map());
 
@@ -204,8 +197,3 @@ async function closeClient() {
   });
   return "Client's operations closed successfully";
 }
-
-async function helloWorld() {
-  console.log('Hello World Motherfuckers!!!!!');
-}
-//module.exports = sendRequest;
