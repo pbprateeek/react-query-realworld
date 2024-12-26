@@ -1,8 +1,6 @@
 import apiClient, {
-  errorCallback,
   initReqWithJwtToken,
   sendRequestWithParams,
-  successCallback,
 } from '@/repositories/apiClient';
 import sendRequest from '../reconfig-async-client';
 import { postLoginParam, postRegisterParam, putUserParam } from './usersRepository.param';
